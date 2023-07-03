@@ -7,12 +7,34 @@ import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { theme } from "~/theme";
+import axios from "axios";
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { refetchOnWindowFocus: false, retry: false, staleTime: Infinity },
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+      staleTime: Infinity,
+    },
   },
 });
+
+axios.interceptors.response.use(
+  () => {},
+  (err) => {
+    if (err.response.status === 401) {
+      alert(
+        "You are not authorized. Try to login first and repeat this action again"
+      );
+    }
+
+    if (err.response.status === 403) {
+      alert("You don't have permission to perform this action");
+    }
+
+    return Promise.reject(err);
+  }
+);
 
 if (import.meta.env.DEV) {
   const { worker } = await import("./mocks/browser");
