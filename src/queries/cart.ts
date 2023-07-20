@@ -4,19 +4,21 @@ import { useQuery, useQueryClient, useMutation } from "react-query";
 import API_PATHS from "~/constants/apiPaths";
 import { CartItem } from "~/models/CartItem";
 
+type Cart = {
+  id: string | null;
+  items: CartItem[];
+};
+
 type CartResponse = {
   data: {
     message: string;
     statusCode: number;
-    cart: {
-      id: string;
-      items: CartItem[];
-    };
+    cart: Cart;
   };
 };
 
 export function useCart() {
-  return useQuery<CartItem[], AxiosError>("cart", async () => {
+  return useQuery<Cart, AxiosError>("cart", async () => {
     const res = await axios.get<CartResponse>(
       `${API_PATHS.cart}/profile/cart`,
       {
@@ -25,7 +27,7 @@ export function useCart() {
         },
       }
     );
-    return res.data.data.cart.items;
+    return res.data.data.cart;
   });
 }
 
@@ -43,8 +45,8 @@ export function useInvalidateCart() {
 }
 
 export function useUpsertCart() {
-  return useMutation((values: CartItem) =>
-    axios.put<CartItem[]>(`${API_PATHS.cart}/profile/cart`, values, {
+  return useMutation((cart: Cart) =>
+    axios.put<Cart>(`${API_PATHS.cart}/profile/cart`, cart, {
       headers: {
         Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
       },
