@@ -26,7 +26,7 @@ export default function AddProductToCart({ product }: AddProductToCartProps) {
       const newItem = { product, count: 1 };
       updatedCart = {
         id: data?.id ?? null,
-        items: [newItem],
+        items: [...items, newItem],
       };
     } else {
       updatedCart = {
