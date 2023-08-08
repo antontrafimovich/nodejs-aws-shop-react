@@ -5,30 +5,72 @@ import Add from "@mui/icons-material/Add";
 import Remove from "@mui/icons-material/Remove";
 import IconButton from "@mui/material/IconButton";
 import { useCart, useInvalidateCart, useUpsertCart } from "~/queries/cart";
+import { cart } from "~/mocks/data";
 
 type AddProductToCartProps = {
   product: Product;
 };
 
 export default function AddProductToCart({ product }: AddProductToCartProps) {
-  const { data = [], isFetching } = useCart();
+  const { data, isFetching } = useCart();
   const { mutate: upsertCart } = useUpsertCart();
   const invalidateCart = useInvalidateCart();
-  const cartItem = data.find((i) => i.product.id === product.id);
+  const items = data ? data.items : [];
+  const cartItemIndex = items.findIndex((i) => i.product.id === product.id);
+  const cartItem = items[cartItemIndex];
 
   const addProduct = () => {
-    upsertCart(
-      { product, count: cartItem ? cartItem.count + 1 : 1 },
-      { onSuccess: invalidateCart }
-    );
+    let updatedCart;
+
+    if (!cartItem) {
+      const newItem = { product, count: 1 };
+      updatedCart = {
+        id: data?.id ?? null,
+        items: [...items, newItem],
+      };
+    } else {
+      updatedCart = {
+        id: data?.id ?? null,
+        items: [
+          ...items.slice(0, cartItemIndex),
+          { ...cartItem, count: cartItem.count + 1 },
+          ...items.slice(cartItemIndex + 1),
+        ],
+      };
+    }
+
+    upsertCart(updatedCart, { onSuccess: invalidateCart });
   };
 
   const removeProduct = () => {
+    if (!cartItem) {
+      return;
+    }
+
+    if (cartItem.count === 1) {
+      const updatedCart = {
+        id: data?.id ?? null,
+        items: [
+          ...items.slice(0, cartItemIndex),
+          ...items.slice(cartItemIndex + 1),
+        ],
+      };
+
+      upsertCart(updatedCart, { onSuccess: invalidateCart });
+      return;
+    }
+
     if (cartItem) {
-      upsertCart(
-        { ...cartItem, count: cartItem.count - 1 },
-        { onSuccess: invalidateCart }
-      );
+      const updatedCart = {
+        id: data?.id ?? null,
+        items: [
+          ...items.slice(0, cartItemIndex),
+          { ...cartItem, count: cartItem.count - 1 },
+          ...items.slice(cartItemIndex + 1),
+        ],
+      };
+
+      upsertCart(updatedCart, { onSuccess: invalidateCart });
     }
   };
 

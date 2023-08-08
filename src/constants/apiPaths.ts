@@ -1,9 +1,9 @@
 const API_PATHS = {
   product: "https://.execute-api.eu-west-1.amazonaws.com/dev",
   order: "https://.execute-api.eu-west-1.amazonaws.com/dev",
-  import: "	https://n2vl42dcob.execute-api.us-east-1.amazonaws.com",
-  bff: "https://i9m60vpkm1.execute-api.us-east-1.amazonaws.com",
-  cart: "https://.execute-api.eu-west-1.amazonaws.com/dev",
+  import: "http://antontrafimovich-bff-api-dev.us-east-1.elasticbeanstalk.com/import",
+  bff: "http://antontrafimovich-bff-api-dev.us-east-1.elasticbeanstalk.com/products",
+  cart: "http://antontrafimovich-bff-api-dev.us-east-1.elasticbeanstalk.com/cart/api",
 };
 
 export default API_PATHS;

@@ -9,7 +9,14 @@ export function useAvailableProducts() {
     "available-products",
     async () => {
       const res = await axios.get<AvailableProduct[]>(
-        `${API_PATHS.bff}/products`
+        `${API_PATHS.bff}/products`,
+        {
+          headers: {
+            Authorization: `Basic ${localStorage.getItem(
+              "authorization_token"
+            )}`,
+          },
+        }
       );
       return res.data;
     }
@@ -29,7 +36,14 @@ export function useAvailableProduct(id?: string) {
     ["product", { id }],
     async () => {
       const res = await axios.get<AvailableProduct>(
-        `${API_PATHS.bff}/product/${id}`
+        `${API_PATHS.bff}/product/${id}`,
+        {
+          headers: {
+            Authorization: `Basic ${localStorage.getItem(
+              "authorization_token"
+            )}`,
+          },
+        }
       );
       return res.data;
     },

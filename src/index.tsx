@@ -20,7 +20,7 @@ const queryClient = new QueryClient({
 });
 
 axios.interceptors.response.use(
-  () => {},
+  (response) => response,
   (err) => {
     if (err.response.status === 401) {
       alert(
@@ -36,10 +36,10 @@ axios.interceptors.response.use(
   }
 );
 
-if (import.meta.env.DEV) {
-  const { worker } = await import("./mocks/browser");
-  worker.start({ onUnhandledRequest: "bypass" });
-}
+// if (import.meta.env.DEV) {
+//   const { worker } = await import("./mocks/browser");
+//   worker.start({ onUnhandledRequest: "bypass" });
+// }
 
 const container = document.getElementById("app");
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

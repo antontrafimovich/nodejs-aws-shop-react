@@ -5,8 +5,9 @@ import { Link } from "react-router-dom";
 import { useCart } from "~/queries/cart";
 
 export default function Cart() {
-  const { data = [] } = useCart();
-  const badgeContent = data.length || undefined;
+  const { data } = useCart();
+  const items = data ? data.items : [];
+  const badgeContent = items.length || undefined;
 
   return (
     <IconButton color="inherit" component={Link} to="/cart" size="large">
